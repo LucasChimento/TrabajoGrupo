@@ -30,18 +30,22 @@ public class Calculadora {
 		switch(opcion)
 		{
 		case "1":
+			System.out.println("Sumando");
 			numeros=solicitarNumeros('+');
 			resultado=suma(numeros);
 			break;
 		case "2":
+			System.out.println("Restando");
 			numeros=solicitarNumeros('-');
 			resultado=resta(numeros);
 			break;
 		case "3":
+			System.out.println("Multiplicando");
 			numeros=solicitarNumeros('*');
 			resultado=producto(numeros);
 			break;
 		case "4":
+			System.out.println("Dividiendo");
 			numeros=solicitarNumeros('/');
 			resultado=division(numeros);
 			break;
@@ -99,22 +103,22 @@ public class Calculadora {
 	}
 	public static double suma(double[] numeros)
 	{
-		if(numeros==null||numeros.length==0) return 0;
+		if(numeros==null) return 0;
 		return numeros[0]+numeros[1];
 	}
 	public static double resta(double[] numeros)
 	{
-		if(numeros==null||numeros.length==0) return 0;
+		if(numeros==null) return 0;
 		return numeros[0]-numeros[1];
 	}
 	public static double producto(double[] numeros)
 	{
-		if(numeros==null||numeros.length==0) return 0;
+		if(numeros==null) return 0;
 		return numeros[0]*numeros[1];
 	}
 	public static double division(double[] numeros)
 	{
-		if(numeros==null||numeros.length==0) return 0;
+		if(numeros==null) return 0;
 		if(numeros[1]==0)
 		{
 			System.out.println("Error division por 0!");
