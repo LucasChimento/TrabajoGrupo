@@ -42,7 +42,7 @@ public class ManejoConsola {
 			}
 			else
 			{
-				System.out.println("ingrese (s)i o (n)o");
+				System.out.println("ingrese (s)i o (n)o para salir.");
 			}
 			
 		}while(true);

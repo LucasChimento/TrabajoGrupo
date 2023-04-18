@@ -19,11 +19,14 @@ public class ClasePrincipal {
 		lecturaArchivos();
 
 		do {
-		salir=menu(ManejoConsola.pedirEntero("\n-Que desea hacer: \n"+
+			
+		salir=menu(ManejoConsola.pedirEntero("\n-MENU PRINCIPAL\n"+
 				"1) Mostrar datos de ronda.\n"+
 				"2) Mostrar puntaje de una persona.\n"+
 				"3) Mostrar tabla de puntajes.\n"+
-				"4)Salir\n"//+
+				"4) Volver a cargar los archivos.\n"+
+				"5) Cambiar de rutas.\n"+
+				"6)Salir\n"//+
 				//"\n"+
 				//"\n"+
 				//"\n"
@@ -37,8 +40,7 @@ public class ClasePrincipal {
 		{
 		case 1:
 				Ronda r=rondas.get(ManejoConsola.pedirEntero("-Nro de ronda a mostrar: ")-1);
-				if(r!=null)
-				r.mostarDatosConsola();
+				if(r!=null)r.mostarDatosConsola();
 				else System.out.println("-No se pudo encontrar la ronda!.");
 				return false;
 		case 2:
@@ -48,7 +50,17 @@ public class ClasePrincipal {
 			tablaPuntajes();
 			return false;
 		case 4:
-		return true;
+			rondas= new HashMap<Integer,Ronda>();
+			personas=new ArrayList<Persona>();
+			lecturaArchivos();
+		return false;
+		case 5:
+			rutas(0);
+			rutas(1);
+			return false;
+		case 6:
+			System.out.println("Saliendo...");
+			return true;
 		default:
 			System.out.println("-Por favor ingrese alguna de las opciones listadas arriba.");
 			return false;
@@ -57,10 +69,12 @@ public class ClasePrincipal {
 	
 	public static void menuPersonas()
 	{
+		System.out.println("\nMENU PERSONAS\n");
 		int opcion1=-1;
 		int opcion2;
 		Persona p;
 		int puntos;
+		
 		for(int i=0; i<personas.size();i++)
 		{
 			System.out.println((i+1)+") "+personas.get(i).getNombre()+".");
@@ -70,16 +84,15 @@ public class ClasePrincipal {
 			opcion1=ManejoConsola.pedirEntero("-Elija una opcion: ");
 			if(opcion1==personas.size()+1) return;
 			opcion1-=1;
-		}
-		while(opcion1<0||opcion1>=personas.size());
+		}while(opcion1<0||opcion1>=personas.size());
 		p=personas.get(opcion1);
 		do {
-		opcion2=ManejoConsola.pedirEntero("-Que desea hacer?\n"
+			opcion2=ManejoConsola.pedirEntero("\n"+p.getNombre().toUpperCase()+"\n"
 				+ "1) Ver puntos de una ronda en particular.\n"
 				+ "2) Ver total de puntos.\n"
 				+ "3) Elejir otra persona.\n"
 				+ "4) Volver al menu principal.\n");
-		Ronda r;
+			Ronda r;
 			switch(opcion2)
 			{
 			case 1:
@@ -130,7 +143,6 @@ public class ClasePrincipal {
 			}
 		
 		} while(opcion2!=-1);
-
 	}
 	
 	
@@ -166,7 +178,7 @@ public class ClasePrincipal {
 					}
 				}while(!rutaEncontrada);
 			break;
-			
+
 			case 1:
 					System.out.println("\n-Por favor ingrese la direccion de donde desea cargar los archivos de los pronosticos.\n"+
 					"Dentro de la ruta esecificada debe haber otra con el nombre de la persona y dentro el archivo \"Pronosticos.txt\"\n"+
@@ -262,7 +274,8 @@ public class ClasePrincipal {
 		personas.sort(c.reversed());
 		for(Persona p : personas)
 		{
-			System.out.println((personas.indexOf(p)+1)+")"+p.getNombre()+" con "+p.getPuntos()+" puntos.");
+			int lugar=personas.indexOf(p)+1;
+			System.out.println(lugar+")"+p.getNombre()+" con "+p.getPuntos()+" puntos.");
 		}
 	}
 	

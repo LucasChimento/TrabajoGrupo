@@ -1,5 +1,7 @@
 package paquetePrincipal;
 
+
+
 public class Partido {
 	private Equipo[] equipos=new Equipo[2];
 	private int nroPartido;

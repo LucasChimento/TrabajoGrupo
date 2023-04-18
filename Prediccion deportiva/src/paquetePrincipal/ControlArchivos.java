@@ -15,10 +15,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class ControlArchivos {
-	private static String rutaRondasPorDefecto="/Rondas/";
+	private static String rutaRondasPorDefecto="../Rondas/";
 	private static String encabezadoRondaPorDefecto="-Equipo local\tGoles\tGoles\tEquipo visitante\n";
 	private static String encabezadoPronosticoPorDefecto="-Equipo local\tGana\tEmpata\tGana\tEquipo visitante\n";
-	private static String rutaPronosticosPorDefecto="/Pronosticos/";
+	private static String rutaPronosticosPorDefecto="../Pronosticos/";
 	private static String rutaRondas=rutaRondasPorDefecto;
 	private static String rutaPronosticos=rutaPronosticosPorDefecto;
 	private static String encabezadoRonda=encabezadoRondaPorDefecto;
@@ -116,13 +116,13 @@ public class ControlArchivos {
 		Persona pers=new Persona(nombrePersona);
  		Path nuevaRuta;
  		String nombreArchivo="Pronosticos.txt";
- 		System.out.println("-Los archivos de pronosticos creados seran guardados en la direccion \""+rutaPronosticos+"\"");
 		try {		
 				String rut=rutaPronosticos+"/"+nombrePersona+"/";
 				nuevaRuta=Files.createDirectories(Paths.get(rut));;
 				Path archivo=Paths.get(nuevaRuta.toString()+"/"+nombreArchivo);
 				if(Files.notExists(archivo))
 				{
+					System.out.println("-EL archivo de pronosticos creado sera guardado en la direccion \""+rut+"\"");
 					Files.createFile(archivo);
 					Files.writeString(archivo,"Ronda-X-Partido-X"+"\n"+encabezadoPronostico, StandardOpenOption.APPEND);
 				}
@@ -158,14 +158,14 @@ public class ControlArchivos {
 	}
 	public static void crearArchivosRondas() 
 	{
-		System.out.println("-El archivo de rondas creado sera guardado en la direccion \""+rutaRondas+"\"");
 		try {		
 				Path archivo=Paths.get(rutaRondas+"Rondas.txt");
 				if(Files.notExists(archivo))
 				{
+					System.out.println("-El archivo de rondas creado sera guardado en la direccion \""+rutaRondas+"\"");
 					Files.createFile(archivo);
+					Files.writeString(archivo,"Ronda-X\n"+encabezadoRonda, StandardOpenOption.APPEND);
 				}
-				Files.writeString(archivo,"Ronda-X\n"+encabezadoRonda, StandardOpenOption.APPEND);
 		}catch(IOException e)
 		{
 			System.out.println("-Error en la creacion de ronda");
