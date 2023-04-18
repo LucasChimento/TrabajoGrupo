@@ -1,0 +1,13 @@
+Ronda-1
+-Equipo local	Goles	Goles	Equipo visitante
+Argentina	2	1	Venezuela
+Uruguay 	1	2	Paraguay
+El Salvador	3	2	Brasil
+Bolivia 	1	1	Chile
+
+Ronda-2
+-Equipo local	Goles	Goles	Equipo visitante
+Estonia 	0	0	Espania
+Inglaterra	2	3	Jamaica
+Rusia   	4	2	Canada
+Serbia  	3	1	Sri lanka

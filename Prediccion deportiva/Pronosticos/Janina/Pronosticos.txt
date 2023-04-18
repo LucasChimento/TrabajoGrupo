@@ -1,0 +1,31 @@
+Ronda-1-Partido-1
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+Argentina	o	x	o	Venezuela
+
+Ronda-1-Partido-2
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+Uruguay 	o	x	o	Paraguay
+
+Ronda-1-Partido-3
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+El Salvador	o	x	o	Brasil
+
+Ronda-1-Partido-4
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+Bolivia	o	o	x	Chile
+
+Ronda-2-Partido-1
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+Estonia	x	o	o	Espania
+
+Ronda-2-Partido-2
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+Inglaterra	o	x	o	Jamaica
+
+Ronda-2-Partido-3
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+Rusia   	o	o	x	Canada
+
+Ronda-2-Partido-4
+-Equipo local	Gana	Empata	Gana	Equipo visitante
+Serbia  	o	o	x	Sri lanka
