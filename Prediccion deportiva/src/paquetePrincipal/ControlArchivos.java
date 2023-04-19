@@ -36,77 +36,49 @@ public class ControlArchivos {
 	// setters
 	public static boolean setRutaRondas(String nuevaRuta)
 	{
-			if(nuevaRuta==null)
+			if(nuevaRuta==null||nuevaRuta.equals(""))
 			{
-				System.out.println("-Se utilizara la ruta por defecto: \""+rutaRondasPorDefecto+"\".");
+				System.out.println("-Se utilizara la ruta por defecto: \""+rutaRondasPorDefecto+"\".\n");
 				rutaRondas=rutaRondasPorDefecto;
 				return true;
 			}
 			if(!nuevaRuta.endsWith("/")||!nuevaRuta.endsWith("\\"))
 			{
-				nuevaRuta=nuevaRuta+"/";
+				if(nuevaRuta.contains("\\"))nuevaRuta=nuevaRuta+"\\";
+				else nuevaRuta=nuevaRuta+"/";
 			}
-			if(Files.exists(Path.of(nuevaRuta)))
+			if(Files.exists(Paths.get(nuevaRuta)))
 			{
 				rutaRondas=nuevaRuta;
 				return true;
 			}
 			else
 			{
-				System.out.println("-No se encontro la ruta: \""+nuevaRuta+"\".");
+				System.out.println("-No se encontro la ruta: \""+nuevaRuta+"\".\n");
 				return false;
 			}
 	}
-	public static void setEncabezadoRonda(String nuevoEncabezado)
-	{
-		if(nuevoEncabezado==null)
-		{
-			encabezadoRonda=encabezadoRondaPorDefecto;
-		}
-		if(!nuevoEncabezado.equals(""))
-		{
-			encabezadoRonda=nuevoEncabezado;
-		}
-		else
-		{
-			System.out.println("-El nuevo encabezado no es valido!");
-		}
-	}
-	public static void setEncabezadoPronostico(String nuevoEncabezado)
-	{
-		if(nuevoEncabezado==null)
-		{
-			encabezadoPronostico=encabezadoPronosticoPorDefecto;
-		}
-		if(!nuevoEncabezado.equals(""))
-		{
-			encabezadoPronostico=nuevoEncabezado;
-		}
-		else
-		{
-			System.out.println("-El nuevo encabezado no es valido!");
-		}
-	}
 	public static boolean setRutaPronosticos(String nuevaRuta)
 	{
-			if(nuevaRuta==null)
+			if(nuevaRuta==null||nuevaRuta.equals(""))
 			{
-				System.out.println("-Se utiliza la ruta por defecto.\""+rutaPronosticosPorDefecto+"\"");
+				System.out.println("-Se utilizara la ruta por defecto.\""+rutaPronosticosPorDefecto+"\".\n");
 				rutaPronosticos=rutaPronosticosPorDefecto;
 				return true;
 			}
 			if(!nuevaRuta.endsWith("/")||!nuevaRuta.endsWith("\\"))
 			{
-				nuevaRuta=nuevaRuta+"/";
+				if(nuevaRuta.contains("\\"))nuevaRuta=nuevaRuta+"\\";
+				else nuevaRuta=nuevaRuta+"/";
 			}
-			if(Files.exists(Path.of(nuevaRuta)))
+			if(Files.exists(Paths.get(nuevaRuta)))
 			{
 				rutaPronosticos=nuevaRuta;
 				return true;
 			}
 			else
 			{
-				System.out.println("-No se encontro la ruta: \""+nuevaRuta+"\".");
+				System.out.println("-No se encontro la ruta: \""+nuevaRuta+"\".\n");
 				return false;
 			}
 	}
@@ -122,7 +94,7 @@ public class ControlArchivos {
 				Path archivo=Paths.get(nuevaRuta.toString()+"/"+nombreArchivo);
 				if(Files.notExists(archivo))
 				{
-					System.out.println("-EL archivo de pronosticos creado sera guardado en la direccion \""+rut+"\"");
+					System.out.println("-EL archivo de pronosticos creado sera guardado en la direccion \""+rut+"\".\n");
 					Files.createFile(archivo);
 					Files.writeString(archivo,"Ronda-X-Partido-X"+"\n"+encabezadoPronostico, StandardOpenOption.APPEND);
 				}
@@ -152,7 +124,7 @@ public class ControlArchivos {
 			return true;
 		}catch(IOException e)
 		{
-			System.out.println("-Error "+e+" al crear directorios por defecto.");
+			System.out.println("-Error "+e+" al crear directorios por defecto.\n");
 			return false;
 		}
 	}
@@ -162,13 +134,13 @@ public class ControlArchivos {
 				Path archivo=Paths.get(rutaRondas+"Rondas.txt");
 				if(Files.notExists(archivo))
 				{
-					System.out.println("-El archivo de rondas creado sera guardado en la direccion \""+rutaRondas+"\"");
+					System.out.println("-El archivo de rondas creado sera guardado en la direccion \""+rutaRondas+"\".\n");
 					Files.createFile(archivo);
 					Files.writeString(archivo,"Ronda-X\n"+encabezadoRonda, StandardOpenOption.APPEND);
 				}
 		}catch(IOException e)
 		{
-			System.out.println("-Error en la creacion de ronda");
+			System.out.println("-Error en la creacion de ronda.\n");
 			e.printStackTrace();
 		}	
 	}
@@ -224,8 +196,7 @@ public class ControlArchivos {
 			return rondas;
  		}catch(NumberFormatException e)
  		{
-			System.out.println("-Asegurese de cambiar la X en el archivo de ronda, por un valor entero positivo"+
-			e.getMessage());
+			System.out.println("-Asegurese de cambiar la X en el archivo de ronda, por un valor entero positivo-\n");
 			return null;
 		}catch(NoSuchFileException e)
 		{
@@ -244,7 +215,7 @@ public class ControlArchivos {
 			File directorios= new File(rutaPronosticos);
 			if(directorios.listFiles()==null||directorios.listFiles().length==0)
 			{
-				System.out.println("-No se encontraron directorios de personas.");
+				System.out.println("-No se encontraron directorios de personas.\n");
 				return null;
 			}
 			ArrayList<Persona> personas  = new ArrayList<Persona>();
@@ -289,7 +260,7 @@ public class ControlArchivos {
 					personas.add(persona);
 				}catch(NumberFormatException e)
 				{
-					System.out.println("-Asegurese de cambiar la X en el archivo de ronda, por un valor entero positivo"+
+					System.out.println("-Asegurese de cambiar la X en el archivo de ronda, por un valor entero positivo\n"+
 							e.getMessage());
 							return null;
 				}catch(NoSuchFileException e)
@@ -303,9 +274,9 @@ public class ControlArchivos {
 				}
 			}
 			if(personas.size()!=0)
-		System.out.println("-Pronosticos cargados exitosamente!.");
+		System.out.println("-Pronosticos cargados exitosamente!.\n");
 			else {
-				System.out.println("-No se encontraron carpetas compatibles!.");
+				System.out.println("-No se encontraron carpetas compatibles!.\n");
 				personas=null;
 			}
 		return personas;

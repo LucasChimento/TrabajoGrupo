@@ -31,6 +31,7 @@ public class Partido {
 	public int getGolesEquipo2() {return golEquipo2;}
 	public void setNroPartido(int nro) {nroPartido=nro;}
 	public int getNroPartido() {return nroPartido;}
+	
 	public ResultadoPartido getResultado(Equipo equipo)
 	{
 		if(golEquipo1==golEquipo2) return ResultadoPartido.EMPATA;

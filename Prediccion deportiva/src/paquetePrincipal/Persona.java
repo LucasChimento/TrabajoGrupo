@@ -14,11 +14,11 @@ public class Persona implements Comparable<Persona> {
 		this.nombre=nombre;
 		puntos=0;
 	}
+	// Getters
 	public int getPuntos() {return puntos;}
 	public boolean getPuntosObtenidos() {return puntosObtenidos;}
 	public String getNombre() {return nombre;}
 	public ArrayList<Pronostico> getPronostico() {return pronosticos;}
-	public void agregarPronostico(Pronostico pron) {pronosticos.add(pron);}
 	public int getPuntosConDetalle(Ronda ronda) {
 		int pnts=0;
 		for(Pronostico pr : pronosticos)
@@ -26,25 +26,23 @@ public class Persona implements Comparable<Persona> {
 			if(pr.getNroRonda()!=ronda.getRonda()) continue;
 			Partido p = ronda.getPartido(pr.getPartido().getNroPartido());
 			if(!(pr.getPartido().getNroPartido()==p.getNroPartido())) continue;
-			System.out.println("Participantes");
+			System.out.println("\nParticipantes");
 			System.out.print(p.getEquipo(1).getDatos()+" vs ");
 			System.out.println(p.getEquipo(2).getDatos());
 			System.out.println(p.getGolesEquipo1() +" a "+p.getGolesEquipo2());
-			System.out.println(nombre +" apesta porque "+pr.getResultado().toString().toLowerCase()+" "+pr.getEquipo().getDatos());
+			System.out.println(nombre +" apuesta porque "+pr.getResultado().toString().toLowerCase()+" "+pr.getEquipo().getDatos());
 			if(pr.getResultado()==p.getResultado(pr.getEquipo()))
 			{
-				System.out.println(nombre+" Gana 1 punto!");
+				System.out.println(nombre+" Gana 1 punto!\n");
 				pnts++;
 			}
 			else
 			{
-				System.out.println(nombre+" Se equivoca!");
+				System.out.println(nombre+" Se equivoca!\n");
 			}
 		}
-		return pnts;
-		
+		return pnts;	
 	}
-	
 	public int getPuntosSinDetalle(Ronda ronda) {
 		int pnts=0;
 		for(Pronostico pr : pronosticos)
@@ -59,9 +57,7 @@ public class Persona implements Comparable<Persona> {
 		}
 		return pnts;
 		
-	} 
-	
-	
+	}
 	public int getPuntosTotales(HashMap<Integer, Ronda> rondas)
 	{
 		if(!puntosObtenidos)
@@ -85,7 +81,8 @@ public class Persona implements Comparable<Persona> {
 		return puntos;
 		
 	}
-	
+	//Procedimientos
+	public void agregarPronostico(Pronostico pron) {pronosticos.add(pron);}
 	@Override
 	public int compareTo(Persona o) {
 		if(o==null) return 0;

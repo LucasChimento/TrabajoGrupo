@@ -19,33 +19,39 @@ public class ManejoConsola {
 			}catch(InputMismatchException e)
 			{
 				System.out.println("Error de tipeo. Solo se aceptan numeros enteros");
+				entrada.next();
 			}
 		}while(true);
 	}
 	public static String pedirTexto(String mensaje) 
-		{
-				if(mensaje==null)System.out.print("Ingrese un texto: ");
-				else System.out.print(mensaje);
-				return entrada.next();
-		}
+	{
+		String texto;
+		if(mensaje==null)System.out.print("Ingrese un texto: ");
+		else System.out.print(mensaje);
+		texto=entrada.nextLine();
+		if(texto.equals(""))
+			texto=entrada.nextLine();
+		
+		return texto;
+	}
 	public static boolean preguntaSioNo(String pregunta)
 	{
 		do {
-				
-			System.out.println(pregunta);
+			if(pregunta==null)System.out.println("ingrese (s)i o (n)o.");
+			else System.out.println(pregunta);
 			String respuesta=entrada.next().toLowerCase();
 			if(respuesta.contains("s")) {
+				entrada.nextLine();
 				return true;
 			} else if(respuesta.contains("n"))
 			{
+				entrada.nextLine();
 				return false;
 			}
 			else
 			{
-				System.out.println("ingrese (s)i o (n)o para salir.");
+				System.out.println("ingrese (s)i o (n)o.");
 			}
-			
 		}while(true);
-		
 	}
 }

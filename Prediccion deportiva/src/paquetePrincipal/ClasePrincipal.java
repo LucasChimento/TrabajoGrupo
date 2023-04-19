@@ -10,37 +10,35 @@ public class ClasePrincipal {
 	static HashMap<Integer,Ronda> rondas;
 	
 	public static void main(String[] args) {
+		
 		boolean salir=false;
-		System.out.println("-Bienvenido al super pronosticador deportivo!!");
+		
+		System.out.println("-Bienvenido!!");
 		System.out.println("\n-A continuacion se ingresara o crearan los archivos necesarios.");
 		// Introduccion y set de ruta para leer las rondas
-		rutas(0);
-		rutas(1);
+		modificarRutas(0);
+		modificarRutas(1);
 		lecturaArchivos();
 
 		do {
-			
-		salir=menu(ManejoConsola.pedirEntero("\n-MENU PRINCIPAL\n"+
-				"1) Mostrar datos de ronda.\n"+
+			salir=menu(ManejoConsola.pedirEntero("-MENU PRINCIPAL\n"+
+				"1) Mostrar datos de una ronda.\n"+
 				"2) Mostrar puntaje de una persona.\n"+
 				"3) Mostrar tabla de puntajes.\n"+
 				"4) Volver a cargar los archivos.\n"+
 				"5) Cambiar de rutas.\n"+
-				"6)Salir\n"//+
-				//"\n"+
-				//"\n"+
-				//"\n"
+				"6)Salir\n"
 				));
 		}while(!salir);
 		
 	}
-	public static boolean menu(int opcion)
+	public static boolean menu(int opcion)	// Menu principal.
 	{
 		switch(opcion)
 		{
 		case 1:
-				Ronda r=rondas.get(ManejoConsola.pedirEntero("-Nro de ronda a mostrar: ")-1);
-				if(r!=null)r.mostarDatosConsola();
+				Ronda r=rondas.get(ManejoConsola.pedirEntero("-Ingrese el numero de ronda a mostrar: ")-1);
+				if(r!=null)r.mostrarDatosConsola();
 				else System.out.println("-No se pudo encontrar la ronda!.");
 				return false;
 		case 2:
@@ -50,13 +48,13 @@ public class ClasePrincipal {
 			tablaPuntajes();
 			return false;
 		case 4:
-			rondas= new HashMap<Integer,Ronda>();
+			rondas=new HashMap<Integer,Ronda>();
 			personas=new ArrayList<Persona>();
+			Ronda.resetContador();
 			lecturaArchivos();
 		return false;
 		case 5:
-			rutas(0);
-			rutas(1);
+			for(int i=0; i<=1;i++)modificarRutas(i);
 			return false;
 		case 6:
 			System.out.println("Saliendo...");
@@ -67,7 +65,7 @@ public class ClasePrincipal {
 		}
 	}
 	
-	public static void menuPersonas()
+	public static void menuPersonas()	// Menu que permite interactuar con la informacion de las personas.
 	{
 		System.out.println("\nMENU PERSONAS\n");
 		int opcion1=-1;
@@ -96,7 +94,7 @@ public class ClasePrincipal {
 			switch(opcion2)
 			{
 			case 1:
-				int nroRonda=ManejoConsola.pedirEntero("-Ingrese la ronda: ")-1;
+				int nroRonda=ManejoConsola.pedirEntero("-Ingrese el numero de la ronda: ")-1;
 				 r=rondas.get(nroRonda);
 				if(r!=null)
 				{
@@ -144,9 +142,7 @@ public class ClasePrincipal {
 		
 		} while(opcion2!=-1);
 	}
-	
-	
-	public static void rutas(int opcion)
+	public static void modificarRutas(int opcion)	// Procedimiento que permite modificar las rutas para la lectura de archivos. Rondas(0), Pronosticos(1).							
 	{
 		boolean rutaEncontrada=false;
 		switch(opcion)
@@ -154,7 +150,7 @@ public class ClasePrincipal {
 			case 0:
 				System.out.println("\n-Por favor ingrese la direccion de donde desea cargar los archivos de las rondas.\n"+
 					"El archivo debe llevar el nombre de \"Rondas.txt\"\n"+
-					"En caso de que la ruta sea invalida o no se proporcione ninguna. Se crearan automaticamente en la ruta: \""+ControlArchivos.getRutaRondasPorDefecto()+"\".");
+					"En caso de que la ruta sea invalida o no se proporcione ninguna. Se crearan automaticamente en la ruta: \""+ControlArchivos.getRutaRondasPorDefecto()+"\".\n");
 				do {
 					String rutaDeseada=ManejoConsola.pedirTexto("-Ruta deseada: ");
 					rutaEncontrada=ControlArchivos.setRutaRondas(rutaDeseada);
@@ -182,7 +178,7 @@ public class ClasePrincipal {
 			case 1:
 					System.out.println("\n-Por favor ingrese la direccion de donde desea cargar los archivos de los pronosticos.\n"+
 					"Dentro de la ruta esecificada debe haber otra con el nombre de la persona y dentro el archivo \"Pronosticos.txt\"\n"+
-					"En caso de que la ruta sea invalida o no se proporcione ninguna. Se crearan automaticamente en la ruta: \""+ControlArchivos.getRutaPronosticosPorDefecto()+"\".");
+					"En caso de que la ruta sea invalida o no se proporcione ninguna. Se crearan automaticamente en la ruta: \""+ControlArchivos.getRutaPronosticosPorDefecto()+"\".\n");
 					do 
 					{
 						rutaEncontrada=ControlArchivos.setRutaPronosticos(ManejoConsola.pedirTexto("Ruta deseada: "));
@@ -218,9 +214,7 @@ public class ClasePrincipal {
 				break;
 		}
 	}
-	
-	
-	public static void lecturaArchivos ()
+	public static void lecturaArchivos ()	// Procedimiento de lectura de los archivos de Rondas.txt y Pronosticos.txt .
 	{	
 		do {
 			rondas=ControlArchivos.leerRondas();
@@ -230,11 +224,12 @@ public class ClasePrincipal {
 				{
 					if(ManejoConsola.preguntaSioNo("-Desea cambiar de directorio? s/n"))
 					{
-						rutas(0);
+						modificarRutas(0);
 					}
 					else {
 						if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
 						{
+							System.out.println("Saliendo...");
 							System.exit(0);
 						}
 					}
@@ -250,11 +245,12 @@ public class ClasePrincipal {
 				{
 					if(ManejoConsola.preguntaSioNo("-Desea cambiar de directorio? s/n"))
 					{
-						rutas(1);
+						modificarRutas(1);
 					}
 					else {
 						if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
 						{
+							System.out.println("Saliendo...");
 							System.exit(0);
 						}
 					}
@@ -262,8 +258,7 @@ public class ClasePrincipal {
 			}
 		}while(personas==null);
 	}
-	
-	public static void tablaPuntajes()
+	public static void tablaPuntajes()	// Imprime en consola una tabla con los resultados ordenados de mayor puntaje a menor.
 	{
 		System.out.println("Tabla de puntajes:");
 		for(Persona p : personas)
