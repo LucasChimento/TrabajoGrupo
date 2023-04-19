@@ -1,0 +1,10 @@
+Hola profesora, le adjuntamos unos ejemplos de rondas y pronosticos, para tener una referencia de como los lee el programa.
+Estas carpetas (Rondas,Pronosticos) las puede dejar en el mismo directorio donde este el proyecto, o en la misma aplicacion podra elejir las rutas hacia las carpetas que desee, incluso puede iniciar con los archivos ubicados en las carpetas por defecto, y durante tiempo de ejecucion de la aplicacion cargar las rondas y pronosticos desde otro directorio.
+
+
+Las cosas que se deben respetar para que la aplicacion funcione correctamente son:
+- Los nombres de los archivos Rondas.txt y Pronosticos.txt (Case Sensitive)
+- Que los Pronosticos.txt esten guardados en la carpeta con el nombre de la persona a la que pertenece el pronostico.
+- El formato de la informacion dentro de los archivos Rondas.txt y Pronosticos.txt.
+ 
+ 

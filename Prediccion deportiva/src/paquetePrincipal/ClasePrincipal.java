@@ -48,13 +48,12 @@ public class ClasePrincipal {
 			tablaPuntajes();
 			return false;
 		case 4:
-			rondas=new HashMap<Integer,Ronda>();
-			personas=new ArrayList<Persona>();
-			Ronda.resetContador();
-			lecturaArchivos();
+			reLeerArchivos();
 		return false;
 		case 5:
-			for(int i=0; i<=1;i++)modificarRutas(i);
+			modificarRutas(0);
+			modificarRutas(1);
+			reLeerArchivos();
 			return false;
 		case 6:
 			System.out.println("Saliendo...");
@@ -273,7 +272,13 @@ public class ClasePrincipal {
 			System.out.println(lugar+")"+p.getNombre()+" con "+p.getPuntos()+" puntos.");
 		}
 	}
-	
+	public static void reLeerArchivos()
+	{
+		rondas=new HashMap<Integer,Ronda>();
+		personas=new ArrayList<Persona>();
+		Ronda.resetContador();
+		lecturaArchivos();
+	}
 }
 
 
