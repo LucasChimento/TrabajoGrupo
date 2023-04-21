@@ -4,6 +4,7 @@ package paquetePrincipal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class ControlArchivos {
+	private static String rutaConfiguracionPorDefecto="../Configuracion.txt";
 	private static String rutaRondasPorDefecto="../Rondas/";
 	private static String encabezadoRondaPorDefecto="-Equipo local\tGoles\tGoles\tEquipo visitante\n";
 	private static String encabezadoPronosticoPorDefecto="-Equipo local\tGana\tEmpata\tGana\tEquipo visitante\n";
@@ -85,7 +87,7 @@ public class ControlArchivos {
 	// Creacion de archivos
 	public static Persona crearPronosticosPersona(String nombrePersona)
  	{
-		Persona pers=new Persona(nombrePersona);
+		Persona pers=new Persona(nombrePersona,0);
  		Path nuevaRuta;
  		String nombreArchivo="Pronosticos.txt";
 		try {		
@@ -182,12 +184,12 @@ public class ControlArchivos {
 						continue;
 					}
 				linea=conLinea.split("\t");
-				e1=Equipo.getEquipoPorDatos(linea[0].trim(),"Equipo local");
+				e1=Equipo.getEquipoPorDatos(linea[0].trim());
 				if(e1==null)
-					e1=new Equipo(linea[0].trim(),"Equipo local");	
-				e2=Equipo.getEquipoPorDatos(linea[3].trim(),"Equipo visitante");
+					e1=new Equipo(linea[0].trim());	
+				e2=Equipo.getEquipoPorDatos(linea[3].trim());
 				if(e2==null)
-					e2=new Equipo(linea[3],"Equipo visitante");	
+					e2=new Equipo(linea[3]);	
 				p=new Partido(e1,Integer.parseInt(linea[1]),Integer.parseInt(linea[2]),e2);
 				r.agregarPartido(p);
 			}
@@ -219,11 +221,13 @@ public class ControlArchivos {
 				return null;
 			}
 			ArrayList<Persona> personas  = new ArrayList<Persona>();
-			for( File f : directorios.listFiles())
+			File[] archivosEnDirectorios=directorios.listFiles();
+			for( int i=0;i<archivosEnDirectorios.length;i++)
 			{
-				if(!f.isDirectory())continue;
-				String ruta=rutaPronosticos+f.getName()+"/Pronosticos.txt";
-				Persona persona= new Persona(f.getName());
+				if(!archivosEnDirectorios[i].isDirectory())continue;
+				String nombreArchivo=archivosEnDirectorios[i].getName();
+				String ruta=rutaPronosticos+nombreArchivo+"/Pronosticos.txt";
+				Persona persona= new Persona(nombreArchivo,i);
 				try {
 					Path archivo=Paths.get(ruta);
 					String[] linea;
@@ -244,9 +248,8 @@ public class ControlArchivos {
 							continue;
 						}
 						linea=conLinea.split("\t");
-						equipoGanador=Equipo.getEquipoPorDatos(linea[0].trim(),"Equipo local");
-						if(equipoGanador==null)
-							equipoGanador=new Equipo(linea[0].trim(),"Equipo local");	
+						equipoGanador=Equipo.getEquipoPorDatos(linea[0].trim());
+						if(equipoGanador==null) continue;	
 						if(linea[1].toLowerCase().contains("x"))
 							res=ResultadoPartido.GANA;
 						else if(linea[2].toLowerCase().contains("x"))
@@ -280,6 +283,56 @@ public class ControlArchivos {
 				personas=null;
 			}
 		return personas;
+	}
+	
+	public static String[] leerConfiguracion()
+	{
+		String[] configs=new String[3];
+		try {
+			Path archivoConfigs=Paths.get(rutaConfiguracionPorDefecto);
+			if(Files.exists(archivoConfigs))
+			{
+				for(String linea : Files.readAllLines(archivoConfigs))
+				{
+					if(linea.contains("-")) continue;
+					if(linea.contains("driverDeConexion"))
+					{
+						configs[0]=linea.split("=")[1];
+					}
+					else if(linea.contains("localHost"))
+					{
+						configs[1]=linea.split("=")[1];
+					}
+					else if(linea.contains("nombreBDD"))
+					{
+						configs[2]=linea.split("=")[1];
+					}
+					else if(linea.contains("puntosPorPartidoGanado"))
+					{
+						Persona.setPuntosPPartido(Integer.parseInt(linea.split("=")[1]));
+					}
+					else if(linea.contains("puntosExtra"))
+					{
+						Persona.setPuntosExtra(Integer.parseInt(linea.split("=")[1]));
+					}
+				}
+			}
+			else
+			{
+				System.out.println("No se encontro el archivo en ruta \""+rutaConfiguracionPorDefecto+"\".");
+				return null;
+			}
+		}catch(InputMismatchException e)
+		{
+			System.out.println("Revise en el puntaje del archivo de configuracion. Probablemente no haya un numero para leer.\n"+e.getStackTrace());
+			return null;
+		}catch(IOException e)
+		{
+			System.out.println("Error en el sistema de archivos.\n"+e.getStackTrace());
+			return null;
+		}
+		
+		return configs;
 	}
 	
 }

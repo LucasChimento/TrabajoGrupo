@@ -4,19 +4,30 @@ import java.util.*;
 
 
 public class Persona implements Comparable<Persona> {
+	private int idPersona;
 	private String nombre;
 	private ArrayList<Pronostico> pronosticos = new ArrayList<Pronostico>();
-	private int puntos;
-	private boolean puntosObtenidos= false;
-	
-	public Persona(String nombre)
+	private int puntosParciales;
+	private int puntosTotales;
+	private int puntosExtrasTotales;
+	private static int puntosPorPartidoGanado=0;
+	private static int puntosExtra;
+	public Persona(String nombre,int id)
 	{
 		this.nombre=nombre;
-		puntos=0;
+		this.idPersona=id;
+		puntosParciales=0;
+		puntosExtrasTotales=0;
+		puntosTotales=0;
 	}
+	// Setters
+	public static void setPuntosPPartido(int puntosPP){puntosPorPartidoGanado=puntosPP;}
+	public static void setPuntosExtra(int puntosE) {puntosExtra=puntosE;}
 	// Getters
-	public int getPuntos() {return puntos;}
-	public boolean getPuntosObtenidos() {return puntosObtenidos;}
+	public static int getPuntosExtra() {return puntosExtra;}
+	public int getPuntosE() {return puntosExtrasTotales;}
+	public int getPuntos() {return puntosParciales;}
+	public int getId() {return idPersona;}
 	public String getNombre() {return nombre;}
 	public ArrayList<Pronostico> getPronostico() {return pronosticos;}
 	public int getPuntosConDetalle(Ronda ronda) {
@@ -27,14 +38,14 @@ public class Persona implements Comparable<Persona> {
 			Partido p = ronda.getPartido(pr.getPartido().getNroPartido());
 			if(!(pr.getPartido().getNroPartido()==p.getNroPartido())) continue;
 			System.out.println("\nParticipantes");
-			System.out.print(p.getEquipo(1).getDatos()+" vs ");
-			System.out.println(p.getEquipo(2).getDatos());
+			System.out.print(p.getEquipo(1).getDatos()+" (Local) vs ");
+			System.out.println(p.getEquipo(2).getDatos()+" (Visitante)");
 			System.out.println(p.getGolesEquipo1() +" a "+p.getGolesEquipo2());
 			System.out.println(nombre +" apuesta porque "+pr.getResultado().toString().toLowerCase()+" "+pr.getEquipo().getDatos());
 			if(pr.getResultado()==p.getResultado(pr.getEquipo()))
 			{
 				System.out.println(nombre+" Gana 1 punto!\n");
-				pnts++;
+				pnts+=puntosPorPartidoGanado;
 			}
 			else
 			{
@@ -52,7 +63,7 @@ public class Persona implements Comparable<Persona> {
 			if(!(pr.getPartido().getNroPartido()==p.getNroPartido())) continue;
 			if(pr.getResultado()==p.getResultado(pr.getEquipo()))
 			{
-				pnts++;
+				pnts+=puntosPorPartidoGanado;
 			}
 		}
 		return pnts;
@@ -60,35 +71,38 @@ public class Persona implements Comparable<Persona> {
 	}
 	public int getPuntosTotales(HashMap<Integer, Ronda> rondas)
 	{
-		if(!puntosObtenidos)
+		puntosParciales=0;
+		Ronda ronda;
+		for(int i=0;i<=rondas.size();i++)
 		{
-			Ronda ronda;
-			for(int i=0;i<=rondas.size();i++)
+			ronda=rondas.get(i);
+			if(ronda==null) continue;
+			for(Pronostico pr : pronosticos)
 			{
-				ronda=rondas.get(i);
-				if(ronda==null) continue;
-				for(Pronostico pr : pronosticos)
-				{
-					if(pr.getNroRonda()!=ronda.getRonda()) continue;
-					Partido p = ronda.getPartido(pr.getPartido().getNroPartido());
-					if(!(pr.getPartido().getNroPartido()==p.getNroPartido())) continue;
-					if(pr.getResultado()==p.getResultado(pr.getEquipo()))
-						puntos++;
-				}	
-			}
-			puntosObtenidos=true;	
-		}
-		return puntos;
+				if(pr.getNroRonda()!=ronda.getRonda()) continue;
+				Partido p = ronda.getPartido(pr.getPartido().getNroPartido());
+				if(!(pr.getPartido().getNroPartido()==p.getNroPartido())) continue;
+				if(pr.getResultado()==p.getResultado(pr.getEquipo()))
+					puntosParciales+=puntosPorPartidoGanado;
+			}	
+		}	
+		puntosTotales=puntosParciales+puntosExtrasTotales;
+		return puntosTotales;
 		
+	}
+	public void agregarPuntosExtra(int puntosE) 
+	{ 
+		puntosExtrasTotales=(puntosExtra*puntosE);
+		System.out.println("-Se agregaron "+(puntosExtra*puntosE));
 	}
 	//Procedimientos
 	public void agregarPronostico(Pronostico pron) {pronosticos.add(pron);}
 	@Override
 	public int compareTo(Persona o) {
 		if(o==null) return 0;
-		if(this.puntos<o.puntos) return -1;
-		if(this.puntos==o.puntos) return 0;
-		if(this.puntos>o.puntos) return 1;
+		if(this.puntosTotales<o.puntosTotales) return -1;
+		if(this.puntosTotales==o.puntosTotales) return 0;
+		if(this.puntosTotales>o.puntosTotales) return 1;
 		return 0;
 	}
 	

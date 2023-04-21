@@ -1,0 +1,8 @@
+-Configuracion base de datos:
+driverDeConexion=jdbc:mysql
+localHost=3306
+nombreBDD=apuestas
+
+-Configuracion de puntajes:
+puntosPorPartidoGanado=1
+puntosExtra=1

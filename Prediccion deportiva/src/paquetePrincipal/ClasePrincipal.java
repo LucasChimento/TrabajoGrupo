@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class ClasePrincipal {
 	static ArrayList<Persona> personas= new ArrayList<Persona>();
 	static HashMap<Integer,Ronda> rondas;
-	
+	static String[] configs;
 	public static void main(String[] args) {
 		
 		boolean salir=false;
@@ -17,17 +17,20 @@ public class ClasePrincipal {
 		System.out.println("\n-A continuacion se ingresara o crearan los archivos necesarios.");
 		// Introduccion y set de ruta para leer las rondas
 		modificarRutas(0);
-		modificarRutas(1);
-		lecturaArchivos();
-
+		lecturaArchivos(0);
+		cargarConfigs();
 		do {
-			salir=menu(ManejoConsola.pedirEntero("-MENU PRINCIPAL\n"+
-				"1) Mostrar datos de una ronda.\n"+
-				"2) Mostrar puntaje de una persona.\n"+
-				"3) Mostrar tabla de puntajes.\n"+
-				"4) Volver a cargar los archivos.\n"+
-				"5) Cambiar de rutas.\n"+
-				"6)Salir\n"
+			salir=menu(ManejoConsola.pedirEntero("-MENU PRINCIPAL\n"
+				+ "1) Cargar pronosticos desde base de datos.\n"
+				+ "2) Cargar pronosticos desde archivos.\n"
+				+ "3) Mostrar datos de las rondas.\n"
+				+ "4) Mostrar menu de las personas.\n"
+				+ "5) Mostrar tabla de resultados.\n"
+				+ "6) Cambiar rutas de archivos.\n"
+				+ "7) Volver a cargar archivos.\n"
+				+ "8) Volver a leer el archivo de configuraciones.\n"
+				+ "9) Salir.\n"
+				+ "\n Ingrese una de las opciones: "
 				));
 		}while(!salir);
 		
@@ -37,33 +40,61 @@ public class ClasePrincipal {
 		switch(opcion)
 		{
 		case 1:
-				Ronda r=rondas.get(ManejoConsola.pedirEntero("-Ingrese el numero de ronda a mostrar: ")-1);
-				if(r!=null)r.mostrarDatosConsola();
-				else System.out.println("-No se pudo encontrar la ronda!.");
-				return false;
+			personas= new ArrayList<Persona>();
+			cargarPronosticosBDD();
+			if(personas!=null)System.out.println("-Exito al cargar pronosticos\n");
+			return false;
 		case 2:
-			menuPersonas();
+			modificarRutas(1);
+			personas= new ArrayList<Persona>();
+			lecturaArchivos(1);
 			return false;
 		case 3:
-			tablaPuntajes();
+			Ronda r=rondas.get(ManejoConsola.pedirEntero("-Ingrese el numero de ronda a mostrar: ")-1);
+			if(r!=null)r.mostrarDatosConsola();
+			else System.out.println("-No se pudo encontrar la ronda!.");
 			return false;
 		case 4:
-			reLeerArchivos();
+			menuPersonas();
 		return false;
 		case 5:
-			modificarRutas(0);
-			modificarRutas(1);
-			reLeerArchivos();
+			tablaPuntajes();
 			return false;
 		case 6:
-			System.out.println("Saliendo...");
-			return true;
+			for(int i=0; i<=1;i++)modificarRutas(i);
+			return false;
+		case 7:
+			menuRecargaDeArhivos();
+			return false;
+		case 8:
+			cargarConfigs();
+			return false;
+		case 9:
+			System.out.println("-Saliendo...");
+		return true;
 		default:
 			System.out.println("-Por favor ingrese alguna de las opciones listadas arriba.");
 			return false;
 		}
 	}
-	
+	public static void cargarConfigs()
+	{
+		do {
+			 configs = ControlArchivos.leerConfiguracion();
+			 if(configs==null)
+			 {
+				 if(!ManejoConsola.preguntaSioNo("-Pudo resolver el problema? s/n"))
+				 {
+					 if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
+					 {
+						System.out.println("-Saliendo..."); 
+						System.exit(0);
+					 }
+				 }
+			 }
+		}while(configs==null);
+
+	}
 	public static void menuPersonas()	// Menu que permite interactuar con la informacion de las personas.
 	{
 		System.out.println("\nMENU PERSONAS\n");
@@ -87,8 +118,9 @@ public class ClasePrincipal {
 			opcion2=ManejoConsola.pedirEntero("\n"+p.getNombre().toUpperCase()+"\n"
 				+ "1) Ver puntos de una ronda en particular.\n"
 				+ "2) Ver total de puntos.\n"
-				+ "3) Elejir otra persona.\n"
-				+ "4) Volver al menu principal.\n");
+				+ "3) Agregar puntos extras.\n"
+				+ "4) Elejir otra persona.\n"
+				+ "5) Volver al menu principal.\n");
 			Ronda r;
 			switch(opcion2)
 			{
@@ -115,26 +147,28 @@ public class ClasePrincipal {
 				puntos=0;
 				
 				boolean detalles=ManejoConsola.preguntaSioNo("-Desea ver los detalles? s/n");
-				if(!detalles)
-				{
-					puntos=p.getPuntosTotales(rondas);
-				}
-				else {
 					for(int i=0;i<=rondas.size();i++)
 					{
 						r=rondas.get(i);
-						if(r!=null)
+						if(r!=null && detalles)
 						{
 							puntos+=p.getPuntosConDetalle(r);						
+						}else if(r!=null && !detalles)
+						{
+							puntos+=p.getPuntosSinDetalle(r);
 						}
 					}
-				}
-				System.out.println("-"+p.getNombre()+" tiene un total de: "+puntos);
+				System.out.println("-"+p.getNombre()+" tiene un total de: "+puntos
+						+"\nY "+p.getPuntosE()+" puntos extras");
 				break;
 			case 3:
+				p.agregarPuntosExtra(ManejoConsola.pedirEntero("Ingresar la cantidad de puntos extras.\n"
+						+ "Recuerde que cada punto extra vale: "+Persona.getPuntosExtra()+" :"));
+				break;
+			case 4:
 				menuPersonas();
 				return;
-			case 4:
+			case 5:
 				opcion2=-1;
 				break;
 			}
@@ -213,53 +247,62 @@ public class ClasePrincipal {
 				break;
 		}
 	}
-	public static void lecturaArchivos ()	// Procedimiento de lectura de los archivos de Rondas.txt y Pronosticos.txt .
+	public static void lecturaArchivos (int opcion)	// Procedimiento de lectura de los archivos de Rondas.txt y Pronosticos.txt .
 	{	
-		do {
-			rondas=ControlArchivos.leerRondas();
-			if(rondas==null)
-			{
-				if(!ManejoConsola.preguntaSioNo("-Pudo resolver el error? s/n")) 
+		switch(opcion)
+		{
+		case 0:
+			do {
+				rondas=ControlArchivos.leerRondas();
+				if(rondas==null)
 				{
-					if(ManejoConsola.preguntaSioNo("-Desea cambiar de directorio? s/n"))
+					if(!ManejoConsola.preguntaSioNo("-Pudo resolver el error? s/n")) 
 					{
-						modificarRutas(0);
-					}
-					else {
-						if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
+						if(ManejoConsola.preguntaSioNo("-Desea cambiar de directorio? s/n"))
 						{
-							System.out.println("Saliendo...");
-							System.exit(0);
+							modificarRutas(0);
+						}
+						else {
+							if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
+							{
+								System.out.println("Saliendo...");
+								System.exit(0);
+							}
 						}
 					}
 				}
-			}
-		}while(rondas==null);
+			}while(rondas==null);
+			
+			break;
+		case 1:
+			do {
+				personas=ControlArchivos.leerPronosticos(rondas);
+				if(personas==null)
+				{
+					if(!ManejoConsola.preguntaSioNo("-Pudo resolver el error? s/n")) 
+					{
+						if(ManejoConsola.preguntaSioNo("-Desea cambiar de directorio? s/n"))
+						{
+							modificarRutas(1);
+						}
+						else {
+							if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
+							{
+								System.out.println("Saliendo...");
+								System.exit(0);
+							}
+						}
+					}
+				}
+			}while(personas==null);
+			break;
+		}
 		
-		do {
-			personas=ControlArchivos.leerPronosticos(rondas);
-			if(personas==null)
-			{
-				if(!ManejoConsola.preguntaSioNo("-Pudo resolver el error? s/n")) 
-				{
-					if(ManejoConsola.preguntaSioNo("-Desea cambiar de directorio? s/n"))
-					{
-						modificarRutas(1);
-					}
-					else {
-						if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
-						{
-							System.out.println("Saliendo...");
-							System.exit(0);
-						}
-					}
-				}
-			}
-		}while(personas==null);
 	}
 	public static void tablaPuntajes()	// Imprime en consola una tabla con los resultados ordenados de mayor puntaje a menor.
 	{
-		System.out.println("Tabla de puntajes:");
+		System.out.println("-------------------------");
+		System.out.println("\n-TABLA DE PUNTAJES:");
 		for(Persona p : personas)
 		{
 			p.getPuntosTotales(rondas);
@@ -269,15 +312,48 @@ public class ClasePrincipal {
 		for(Persona p : personas)
 		{
 			int lugar=personas.indexOf(p)+1;
-			System.out.println(lugar+")"+p.getNombre()+" con "+p.getPuntos()+" puntos.");
+			System.out.println(lugar+")"+p.getNombre()+" con "+p.getPuntos()+" puntos y "+p.getPuntosE()+" puntos extra.\n");
+		}
+		System.out.println("-------------------------");
+	}
+	public static void cargarPronosticosBDD()
+	{
+		String usuario=ManejoConsola.pedirTexto("Ingrese el usuario de la base de datos: ");
+		String contraseña=ManejoConsola.pedirTexto("Ingrese la contraseña: ");
+		if(ConexionBDD.ConectarBDD(configs[0], configs[1], configs[2], usuario, contraseña)) {
+			personas=ConexionBDD.leerPersonas();
+			if(personas==null)
+			{
+				System.out.println("-No hay personas cargadas!\n");
+				return;
+			}
+			for(Persona p : personas)
+			{
+				if(p==null) continue;
+				if(!ConexionBDD.leerPronosticos(p, rondas))System.out.println("-Error al cargar pronostico de "+p.getNombre());
+			}
 		}
 	}
-	public static void reLeerArchivos()
+	public static void menuRecargaDeArhivos()
 	{
-		rondas=new HashMap<Integer,Ronda>();
-		personas=new ArrayList<Persona>();
-		Ronda.resetContador();
-		lecturaArchivos();
+		int op;
+		do{
+			op=ManejoConsola.pedirEntero("1) Volver a cargar rondas.\n"
+					+ "2) Volver a cargar pronosticos (archivo).\n"
+					+ "3) Volver al menu principal.\n");
+			switch(op)
+			{
+			case 1:
+				rondas=new HashMap<Integer,Ronda>();
+				Ronda.resetContador();
+				lecturaArchivos(0);
+				break;
+			case 2:
+				personas=new ArrayList<Persona>();
+				lecturaArchivos(1);
+				break;
+			}
+		}while(op!=3);
 	}
 }
 

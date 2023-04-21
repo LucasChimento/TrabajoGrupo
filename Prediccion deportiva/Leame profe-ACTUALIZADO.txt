@@ -1,0 +1,15 @@
+Hola profesora, le adjuntoamos un .txt con la sentencia SQL para crear la misma base de datos que tenemos.Es debido aclarar, que los datos que haga de las predicciones, deben coincidir con el de las rondas que utilice (el cual se sigue cargando como archivo).
+Si bien en el archivo Configuracion.txt puede cambiar mucha info de la conexion SQL, el usuario y contraseña de acceso a la conexion se pide dentro del mismo programa, asi que cada vez que quiera leer la base de datos debera ingresar el usuario y contraseña.
+le dejo abajo las aclaraciones previas que aun se aplican en la parte de archivos.
+
+// Anterior
+Le adjuntamos unos ejemplos de rondas y pronosticos, para tener una referencia de como los lee el programa.
+Estas carpetas (Rondas,Pronosticos) las puede dejar en el mismo directorio donde este el proyecto, o en la misma aplicacion podra elejir las rutas hacia las carpetas que desee, incluso puede iniciar con los archivos ubicados en las carpetas por defecto, y durante tiempo de ejecucion de la aplicacion cargar las rondas y pronosticos desde otro directorio.
+
+
+Las cosas que se deben respetar para que la aplicacion funcione correctamente son:
+- Los nombres de los archivos Rondas.txt y Pronosticos.txt (Case Sensitive)
+- Que los Pronosticos.txt esten guardados en la carpeta con el nombre de la persona a la que pertenece el pronostico.
+- El formato de la informacion dentro de los archivos Rondas.txt y Pronosticos.txt.
+ 
+ 
