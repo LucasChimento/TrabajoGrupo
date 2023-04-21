@@ -7,6 +7,18 @@ import java.util.HashMap;
 public class ConexionBDD {
 	private static Connection conexion;
 	
+	public static boolean getEstadoConexion()
+	{
+		if(conexion==null)return false;
+		try {
+			return !conexion.isClosed();
+		}catch(SQLException e)
+		{
+			System.out.println("-Error al conocer el estado de la conexion con la base de datos.\n"+e.getMessage()+"\n SQLstate:"+e.getSQLState()+"\n");
+			conexion=null;
+			return false;	
+		}
+	}
 	public static boolean ConectarBDD(String driverDeConexion,String localHost,String nombreBDD,String usuario, String contrasegna)
 	{
 		try
@@ -14,10 +26,9 @@ public class ConexionBDD {
 			conexion=DriverManager.getConnection(driverDeConexion+"://localhost:"+localHost+"/"+nombreBDD,usuario,contrasegna);
 			return true;
 		}
-		catch(Exception e)
+		catch(SQLException e)
 		{
-			System.out.println("-Error al intentar conectar a la base de datos.\n");
-			e.printStackTrace();
+			System.out.println("-Error al intentar la conexion con la base de datos.\n"+e.getMessage()+"\n SQLstate:"+e.getSQLState()+"\n");
 			return false;
 		}
 	}
@@ -35,8 +46,8 @@ public class ConexionBDD {
 		}
 		}catch(SQLException e)
 		{
-			System.out.println("-Error en la consulta SQL.\n");
-			e.printStackTrace();
+			System.out.println("-Error en la consulta SQL en la lectura de personas.\n"+e.getMessage()+"\n SQLstate:"+e.getSQLState()+"\n");
+			System.out.println("-No se pudo leer la tabla.");
 			return null;
 		}
 		return personas;
@@ -76,12 +87,35 @@ public class ConexionBDD {
 		return true;
 		}catch(SQLException e)
 		{
-			System.out.println("-Error en la consulta SQL.\n"+e.getStackTrace()+"\n"+e.getSQLState()+"\n");
+			System.out.println("-Error en la consulta SQL en la lectura de pronosticos.\n"+e.getMessage()+"\n SQLstate:"+e.getSQLState()+"\n");
+			System.out.println("-No se pudo leer la tabla.");
 			return false;
 		}
 	}
+		public static void cerrarConexion()
+		{
+			do {
+			try {
+			if(conexion.isClosed()) return;
+			else
+			{
+				if(ManejoConsola.preguntaSioNo("-Se cerrara la conexion con la base de datos.\n-Esta seguro? s/n"))
+				{
+					conexion.close();
+				}
+				else return;
+			}
+			}catch(SQLException e)
+			{
+				System.out.println("-Error al intentar cerrar la conexion con la base de datos.\n"+e.getMessage()+"\n SQLstate:"+e.getSQLState()+"\n");
+				if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
+					return;
+			}
+			}while(true);
+		}
+	}
 	
-}
+
 
 
 	

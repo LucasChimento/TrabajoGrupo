@@ -42,9 +42,10 @@ public class ClasePrincipal {
 		case 1:
 			personas= new ArrayList<Persona>();
 			cargarPronosticosBDD();
-			if(personas!=null)System.out.println("-Exito al cargar pronosticos\n");
+			if(personas!=null && personas.size()>0)System.out.println("-Exito al cargar pronosticos\n");
 			return false;
 		case 2:
+			ConexionBDD.cerrarConexion();
 			modificarRutas(1);
 			personas= new ArrayList<Persona>();
 			lecturaArchivos(1);
@@ -61,7 +62,7 @@ public class ClasePrincipal {
 			tablaPuntajes();
 			return false;
 		case 6:
-			for(int i=0; i<=1;i++)modificarRutas(i);
+			menuCambioRuta();
 			return false;
 		case 7:
 			menuRecargaDeArhivos();
@@ -247,6 +248,23 @@ public class ClasePrincipal {
 				break;
 		}
 	}
+	
+	public static void menuCambioRuta()
+	{
+		int op=0;
+		do {
+			op=ManejoConsola.pedirEntero("\n1) Modificar ruta de las rondas.\n"
+				+ "2) Modificar ruta de pronosticos.\n"
+				+ "3) Volver.");
+			if(op==3) return;
+			else op-=1;
+			modificarRutas(op);
+			if(ManejoConsola.preguntaSioNo("Desea volver a cargar los archivos? s/n"))
+			{
+				lecturaArchivos(op);
+			}
+		}while(true);
+	}
 	public static void lecturaArchivos (int opcion)	// Procedimiento de lectura de los archivos de Rondas.txt y Pronosticos.txt .
 	{	
 		switch(opcion)
@@ -318,9 +336,34 @@ public class ClasePrincipal {
 	}
 	public static void cargarPronosticosBDD()
 	{
-		String usuario=ManejoConsola.pedirTexto("Ingrese el usuario de la base de datos: ");
-		String contraseña=ManejoConsola.pedirTexto("Ingrese la contraseña: ");
-		if(ConexionBDD.ConectarBDD(configs[0], configs[1], configs[2], usuario, contraseña)) {
+		boolean conexionHecha=false;
+		if(!ConexionBDD.getEstadoConexion()) {
+			String usuario=ManejoConsola.pedirTexto("Ingrese el usuario de la base de datos \""+configs[1]+":"+configs[2]+"\" : ");
+			String contraseña=ManejoConsola.pedirTexto("Ingrese la contrasenia: ");
+			conexionHecha=ConexionBDD.ConectarBDD(configs[0], configs[1], configs[2], usuario, contraseña);	
+		}else
+			{
+			 if(ManejoConsola.preguntaSioNo("-Desea cambiar la conexion? s/n"))
+			 {
+				System.out.println("-Recuerde cambiar la configuracion de la base de datos "
+						+ "en el archivo Configuracion.txt"); 
+				if(ManejoConsola.preguntaSioNo("-Desea recargar el archivo? s/n"))
+				{
+					cargarConfigs();
+				}
+				ConexionBDD.cerrarConexion();
+				if(ConexionBDD.getEstadoConexion()) {
+					System.out.println("-No se cerro la conexion anterior! Por favor vuelva a intentar.");
+					return;
+				}
+				String usuario=ManejoConsola.pedirTexto("Ingrese el usuario de la base de datos \""+configs[1]+":"+configs[2]+"\" : ");
+				String contraseña=ManejoConsola.pedirTexto("Ingrese la contrasenia: ");
+				conexionHecha=ConexionBDD.ConectarBDD(configs[0], configs[1], configs[2], usuario, contraseña);	
+			 }
+			}
+		
+		
+		if(conexionHecha) {
 			personas=ConexionBDD.leerPersonas();
 			if(personas==null)
 			{
