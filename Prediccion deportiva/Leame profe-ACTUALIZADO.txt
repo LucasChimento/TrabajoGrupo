@@ -1,6 +1,6 @@
 Hola profesora, le adjuntoamos un .txt con la sentencia SQL para crear la misma base de datos que tenemos.Es debido aclarar, que los datos que haga de las predicciones, deben coincidir con el de las rondas que utilice (el cual se sigue cargando como archivo).
 Si bien en el archivo Configuracion.txt puede cambiar mucha info de la conexion SQL, el usuario y contraseña de acceso a la conexion se pide dentro del mismo programa, asi que cada vez que quiera leer la base de datos debera ingresar el usuario y contraseña.
-le dejo abajo las aclaraciones previas que aun se aplican en la parte de archivos.
+Quedan abajo las aclaraciones previas que aun se aplican en la parte de archivos.
 
 // Anterior
 Le adjuntamos unos ejemplos de rondas y pronosticos, para tener una referencia de como los lee el programa.

@@ -1,4 +1,4 @@
--Configuracion base de datos:
+-Configuracion base de datos
 driverDeConexion=jdbc:mysql
 localHost=3306
 nombreBDD=apuestas

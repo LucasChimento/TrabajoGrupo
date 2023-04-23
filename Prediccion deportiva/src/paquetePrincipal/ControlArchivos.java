@@ -16,12 +16,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class ControlArchivos {
-	private static String rutaConfiguracionPorDefecto="../Configuracion.txt";
+	private static String rutaConfiguracionPorDefecto="../Configuracion/";
 	private static String rutaRondasPorDefecto="../Rondas/";
 	private static String encabezadoRondaPorDefecto="-Equipo local\tGoles\tGoles\tEquipo visitante\n";
 	private static String encabezadoPronosticoPorDefecto="-Equipo local\tGana\tEmpata\tGana\tEquipo visitante\n";
 	private static String rutaPronosticosPorDefecto="../Pronosticos/";
 	private static String rutaRondas=rutaRondasPorDefecto;
+	private static String rutaConfig=rutaConfiguracionPorDefecto;
 	private static String rutaPronosticos=rutaPronosticosPorDefecto;
 	private static String encabezadoRonda=encabezadoRondaPorDefecto;
 	private static String encabezadoPronostico=encabezadoPronosticoPorDefecto;
@@ -32,10 +33,36 @@ public class ControlArchivos {
 	public static String getEncabezadoRonda() {return encabezadoRonda;}
 	public static String getEncabezadoPronostico() {return encabezadoPronostico;}
 	public static String getRutaRondasPorDefecto() {return rutaRondasPorDefecto;}
+	public static String getRutaConfigsPorDefecto() {return rutaConfiguracionPorDefecto;}
 	public static String getEncabezadoRondaPorDefecto() {return encabezadoRondaPorDefecto;}
 	public static String getEncabezadoPronosticoPorDefecto() {return encabezadoPronosticoPorDefecto;}
 	public static String getRutaPronosticosPorDefecto() {return rutaPronosticosPorDefecto;}
 	// setters
+	public static boolean setRutaConfig(String nuevaRuta)
+	{
+		if(nuevaRuta==null||nuevaRuta.equals(""))
+		{
+			System.out.println("-Se utilizara la ruta por defecto: \""+rutaConfiguracionPorDefecto+"\".\n");
+			rutaConfig=rutaConfiguracionPorDefecto;
+			return true;
+		}
+		if(!nuevaRuta.endsWith("/")||!nuevaRuta.endsWith("\\"))
+		{
+			if(nuevaRuta.contains("\\"))nuevaRuta=nuevaRuta+"\\";
+			else nuevaRuta=nuevaRuta+"/";
+		}
+		if(Files.exists(Paths.get(nuevaRuta)))
+		{
+			rutaConfig=nuevaRuta;
+			return true;
+		}
+		else
+		{
+			System.out.println("-No se encontro la ruta: \""+nuevaRuta+"\".\n");
+			return false;
+		}
+	}
+	
 	public static boolean setRutaRondas(String nuevaRuta)
 	{
 			if(nuevaRuta==null||nuevaRuta.equals(""))
@@ -118,6 +145,9 @@ public class ControlArchivos {
 		case 1:
 			ruta=Paths.get(rutaPronosticosPorDefecto);
 			break;
+		case 2:
+			ruta=Paths.get(rutaConfiguracionPorDefecto);
+			break;
 			default:
 				return false;
 		}
@@ -143,6 +173,29 @@ public class ControlArchivos {
 		}catch(IOException e)
 		{
 			System.out.println("-Error en la creacion de ronda.\n");
+			e.printStackTrace();
+		}	
+	}
+	public static void crearArchivosConfig() 
+	{
+		try {		
+				System.out.println(rutaConfig+"Configuracion.txt");
+				Path archivo=Paths.get(rutaConfig+"Configuracion.txt");
+				if(Files.notExists(archivo))
+				{
+					System.out.println("-El archivo de configuraciones creado sera guardado en la direccion \""+rutaConfig+"\".\n");
+					Files.createFile(archivo);
+					Files.writeString(archivo,"-Configuracion base de datos\n"
+							+ "driverDeConexion=jdbc:mysql\n"
+							+ "localHost=3306\n"
+							+ "nombreBDD=apuestas\n"
+							+ "\n-Configuracion de puntajes:\n"
+							+ "puntosPorPartidoGanado=1\n"
+							+ "puntosExtra=1", StandardOpenOption.APPEND);
+				}
+		}catch(IOException e)
+		{
+			System.out.println("-Error en la creacion de Configuracion.txt.\n");
 			e.printStackTrace();
 		}	
 	}
@@ -289,7 +342,7 @@ public class ControlArchivos {
 	{
 		String[] configs=new String[3];
 		try {
-			Path archivoConfigs=Paths.get(rutaConfiguracionPorDefecto);
+			Path archivoConfigs=Paths.get(rutaConfig+"Configuracion.txt");
 			if(Files.exists(archivoConfigs))
 			{
 				for(String linea : Files.readAllLines(archivoConfigs))
@@ -319,7 +372,7 @@ public class ControlArchivos {
 			}
 			else
 			{
-				System.out.println("No se encontro el archivo en ruta \""+rutaConfiguracionPorDefecto+"\".");
+				System.out.println("No se encontro el archivo en ruta \""+rutaConfig+"\".");
 				return null;
 			}
 		}catch(InputMismatchException e)

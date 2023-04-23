@@ -18,6 +18,7 @@ public class ClasePrincipal {
 		// Introduccion y set de ruta para leer las rondas
 		modificarRutas(0);
 		lecturaArchivos(0);
+		modificarRutas(2);
 		cargarConfigs();
 		do {
 			salir=menu(ManejoConsola.pedirEntero("-MENU PRINCIPAL\n"
@@ -46,6 +47,11 @@ public class ClasePrincipal {
 			return false;
 		case 2:
 			ConexionBDD.cerrarConexion();
+			if(ConexionBDD.getEstadoConexion())
+			{
+				System.out.println("-Por favor, antes de seguir cierre la conexion con la base de datos.");
+				return false;
+			}
 			modificarRutas(1);
 			personas= new ArrayList<Persona>();
 			lecturaArchivos(1);
@@ -86,15 +92,21 @@ public class ClasePrincipal {
 			 {
 				 if(!ManejoConsola.preguntaSioNo("-Pudo resolver el problema? s/n"))
 				 {
-					 if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
+					 if(ManejoConsola.preguntaSioNo("-Desea cambiar el directorio? s/n"))
 					 {
-						System.out.println("-Saliendo..."); 
-						System.exit(0);
+						 modificarRutas(2);
+					 }
+					 else {
+						 if(ManejoConsola.preguntaSioNo("-Desea salir? s/n"))
+						 {
+							 System.out.println("-Saliendo..."); 
+							 System.exit(0);
+						 }						 
 					 }
 				 }
 			 }
 		}while(configs==null);
-
+		System.out.println("-Archivo de configuracion cargado con exito!\n");
 	}
 	public static void menuPersonas()	// Menu que permite interactuar con la informacion de las personas.
 	{
@@ -246,6 +258,33 @@ public class ClasePrincipal {
 						}
 					}while(!rutaEncontrada);
 				break;
+			case 2:
+				System.out.println("\n-Por favor ingrese la direccion de donde desea cargar el archivo de configuracion.\n"+
+					"El archivo debe llevar el nombre de \"Configuracion.txt\"\n"+
+					"En caso de que la ruta sea invalida o no se proporcione ninguna. Se creara automaticamente en la ruta: \""+ControlArchivos.getRutaConfigsPorDefecto()+"\".\n");
+				do {
+					String rutaDeseada=ManejoConsola.pedirTexto("-Ruta deseada: ");
+					rutaEncontrada=ControlArchivos.setRutaConfig(rutaDeseada);
+					if(!rutaEncontrada)
+					{
+						
+						if(!ManejoConsola.preguntaSioNo("-Desea volver a intentar? s/n"))
+						{
+							rutaEncontrada=ControlArchivos.setRutaConfig(null);
+							if(!ControlArchivos.crearDirectoriosPorDefecto(2))
+							{
+								System.out.println("-Hubo un error al crear el archivo por defecto! Saliendo del programa.");
+								System.exit(0);
+							}else
+						{
+								ControlArchivos.crearArchivosConfig();
+								System.out.println("-Se ha creado en la ruta \""+ControlArchivos.getRutaConfigsPorDefecto()+
+										"\" un archivo de configuracion. Por favor editelo y vuelva a cargarlo a traves de la opcion (8).");	
+							}
+						}
+					}
+				}while(!rutaEncontrada);
+				break;
 		}
 	}
 	
@@ -255,13 +294,15 @@ public class ClasePrincipal {
 		do {
 			op=ManejoConsola.pedirEntero("\n1) Modificar ruta de las rondas.\n"
 				+ "2) Modificar ruta de pronosticos.\n"
-				+ "3) Volver.");
-			if(op==3) return;
+				+ "3) Modificar ruta de configuraciones.\n"
+				+ "4) Volver.");
+			if(op==4) return;
 			else op-=1;
 			modificarRutas(op);
 			if(ManejoConsola.preguntaSioNo("Desea volver a cargar los archivos? s/n"))
 			{
-				lecturaArchivos(op);
+				if(op==3)cargarConfigs();
+				else lecturaArchivos(op);
 			}
 		}while(true);
 	}

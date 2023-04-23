@@ -94,6 +94,7 @@ public class ConexionBDD {
 	}
 		public static void cerrarConexion()
 		{
+			if(conexion==null) return;
 			do {
 			try {
 			if(conexion.isClosed()) return;

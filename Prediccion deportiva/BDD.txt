@@ -1,10 +1,10 @@
-CREATE DATABASE Apuestas;
-CREATE TABLE Apuestas.Personas
+CREATE DATABASE apuestas;
+CREATE TABLE apuestas.personas
 ( 
 idPersona INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 Nombre VARCHAR(45) NOT NULL
 );
-CREATE TABLE Apuestas.Pronosticos
+CREATE TABLE apuestas.pronosticos
 ( 
 idPronostico INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 nroRonda INT NOT NULL DEFAULT '0',
@@ -12,6 +12,6 @@ nroPartido INT NOT NULL DEFAULT '0',
 Equipo VARCHAR(45) NOT NULL,
 Resultado VARCHAR(45) NOT NULL,
 idPersona INT NOT NULL,
-FOREIGN KEY (idPersona) REFERENCES Apuestas.Personas(idPersona) 
+FOREIGN KEY (idPersona) REFERENCES apuestas.personas(idPersona) 
 ON UPDATE CASCADE ON DELETE CASCADE
 )

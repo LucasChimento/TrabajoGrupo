@@ -1,0 +1,5 @@
+INSERT INTO apuestas.personas (Nombre) VALUES
+("Juan"),
+("Paco"),
+("Pedro"),
+("Delamar");
